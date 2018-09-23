@@ -1,0 +1,71 @@
+body {
+	background-color: #7bbfea;
+}
+
+.container {
+	width: 320px;
+	outline: 2px solid white;
+	padding: 0;
+	margin-top: 30px;
+	margin-bottom: 30px;
+	display: flex;
+	flex-direction: column;
+}
+.output {
+	width: 320px;
+	height: 60px;
+	padding-left: 5px;
+	background: #b3b3b3;
+}
+
+#expression {
+	height: 20px;
+	color: #844015;
+}
+
+#display {
+	font-size: 30px;
+	color: #0e3c58;
+	overflow: hidden;
+}
+
+.buttons {
+	display: flex;
+	flex-direction: column;
+}
+
+.flex-row {
+	display: flex;
+	flex-direction: row;
+}
+
+.numbers {
+	width: 240px;
+
+}
+.operators-column {
+	width: 80px;
+}
+
+button {
+	cursor: pointer;
+	color: #7bbfea;
+	background-color: #0e3c58;
+	width: 80px;
+	height: 65px;
+	margin: 0;
+	font-size: 25px;
+}
+
+#clear, #zero {
+	width: 160px;
+}
+#clear {
+	background-color: #844015;
+}
+#divide, #multiply, #add, #subtract, #equals {
+	background-color: #155a84;
+}
+#equals {
+	height: 130px;
+}

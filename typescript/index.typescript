@@ -1,0 +1,181 @@
+const numbers = [
+	["seven",7], 
+	["eight",8],
+	["nine", 9],
+	["four",4], 
+	["five",5], 
+	["six", 6], 
+	["one",1], 
+	["two",2], 
+	["three", 3], 
+	["zero", 0]
+];
+
+class Buttons extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+	handleDigit = (event) => {
+		this.props.inputDigit(event.target.value);
+	}
+	handleOperator = (event) => {
+		this.props.inputOperator(event.target.value);
+	}
+	handleDecimal = (event) => {
+		this.props.inputDecimal(event.target.value);
+	}
+	render() {	
+		const renderNumbers = numbers.map(item => <button  id={item[0]} key={item[1]} value={item[1]} onClick={this.handleDigit}>{item[1]}</button>)
+    return (
+			<div className="buttons">
+				<div className="first-row">
+					<button id="clear" onClick={this.props.clearDisplay}>AC</button>
+					<button id="divide" value="/" onClick={this.handleOperator}>/</button>
+					<button id="multiply" value="*" onClick={this.handleOperator}>x</button>
+				</div>
+				<div className="flex-row">
+					<div className="numbers">	
+						{renderNumbers}
+						<button id="decimal" value="." onClick={this.handleDecimal}>.</button>
+					</div>
+					<div className="operators-column">
+						<button id="add" value="+" onClick={this.handleOperator}>+</button>
+						<button id="subtract" value="-" onClick={this.handleOperator}>-</button>
+						<button id="equals" onClick={this.props.calculate}>=</button>
+					</div>
+				</div>
+			</div>
+		);
+	}
+}
+
+
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+		this.state = {
+			current: "0",
+			expression: "",
+			calculated: false
+		};
+  }
+	clearDisplay = (event) => {
+		this.setState({
+			current: "0",
+			expression: "",
+			calculated: false
+		});
+	}
+	inputDigit = (input) => {
+		if (this.state.calculated) {
+			this.setState({
+				current: input,
+				expression: input,
+				calculated: false
+			});
+		}
+		else {
+			if (input === "0" && this.state.expression === "0") {
+					return;
+				}
+			if (this.state.current === "0") {
+					this.setState({
+						current: input,
+						expression: this.state.expression + input
+					});
+				}
+			else {
+				this.setState({
+					current: this.state.current + input,
+					expression: this.state.expression + input
+				});
+			}
+		}
+	}
+	inputOperator = (input) => {
+		const isOperator = /[\*\/\+\-]/;
+		if (this.state.expression === "") {
+			return;
+		}
+		if (this.state.calculated) {
+			this.setState({
+				calculated: false
+			});
+		}
+		if (isOperator.test(this.state.expression.slice(-1))) {
+			this.setState({
+				expression: this.state.expression.slice(0, -1) + input
+			})
+		}
+		else {
+			this.setState({
+				expression: this.state.expression + input,
+				current: ""
+			});
+		}
+	}
+	
+	inputDecimal = () => {
+		if (this.state.current.includes(".") && !this.state.calculated) {
+			return;
+		}
+		if (this.state.calculated) {
+			this.setState({
+				current: "0.",
+				expression: "0.",
+				calculated: false
+			});
+		}
+		else {
+			if (this.state.current === "") {
+				this.setState ({
+					current: this.state.current + "0.",
+					expression: this.state.expression + "0."
+				})
+			}
+			else if (this.state.expression === "") {
+				this.setState ({
+					current: this.state.current + ".",
+					expression: this.state.expression + "0."
+				})
+			}
+			else {
+				this.setState({
+					current: this.state.current + ".",
+					expression: this.state.expression + "."
+				});
+			}
+		}
+	}
+	calculate = () => {
+		const result = eval(this.state.expression).toString();
+		this.setState({
+			expression: result,
+			current: result,
+			calculated: true
+		});
+	}
+
+	render() {	
+    return (
+			<div className="container">
+				<div className="output">
+					<div id="expression">
+						{this.state.expression}
+					</div>
+					<div id="display">
+						{this.state.current}
+					</div>
+				</div>
+				<Buttons 
+					clearDisplay={this.clearDisplay}
+					inputDigit={this.inputDigit}
+					inputOperator={this.inputOperator}
+					inputDecimal={this.inputDecimal}
+					calculate={this.calculate} />
+			</div>
+		);
+	}
+}
+
+ReactDOM.render(<App />, document.getElementById('app'));
